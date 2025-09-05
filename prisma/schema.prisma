@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      UserRole @default(STUDENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  teacherProfile Teacher?
+  studentProfile Student?
+  
+  @@map("users")
+}
+
+model Teacher {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  name        String
+  email       String   @unique
+  department  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id])
+  subjects     Subject[]
+  availabilities Availability[]
+  timetableEntries TimetableEntry[]
+  
+  @@map("teachers")
+}
+
+model Student {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  name      String
+  email     String   @unique
+  grade     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id])
+  timetableEntries TimetableEntry[]
+  
+  @@map("students")
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  description String?
+  teacherId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  teacher         Teacher           @relation(fields: [teacherId], references: [id])
+  timetableEntries TimetableEntry[]
+  
+  @@map("subjects")
+}
+
+model Availability {
+  id        String   @id @default(cuid())
+  teacherId String
+  dayOfWeek Int      // 1-7 (Monday-Sunday)
+  startTime Int      // Hour in 24h format (8-17)
+  endTime   Int      // Hour in 24h format (8-17)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  
+  @@unique([teacherId, dayOfWeek, startTime])
+  @@map("availabilities")
+}
+
+model TimetableEntry {
+  id        String   @id @default(cuid())
+  subjectId String
+  teacherId String
+  studentId String
+  dayOfWeek Int      // 1-7 (Monday-Sunday)
+  startTime Int      // Hour in 24h format (8-17)
+  endTime   Int      // Hour in 24h format (8-17)
+  room      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  subject Subject @relation(fields: [subjectId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+  
+  @@unique([studentId, dayOfWeek, startTime])
+  @@map("timetable_entries")
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+}
