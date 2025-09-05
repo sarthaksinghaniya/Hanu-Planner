@@ -15,7 +15,8 @@ import {
   Clock,
   BookOpen,
   Home,
-  LogOut
+  LogOut,
+  GraduationCap
 } from 'lucide-react'
 
 const navigation = [
@@ -34,8 +35,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 p-6 border-b">
-        <Calendar className="h-8 w-8 text-primary" />
-        <h1 className="text-xl font-bold">HANU Planner</h1>
+        <div className="relative">
+          <GraduationCap className="h-8 w-8 text-primary" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+        </div>
+        <div>
+          <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">HANU Planner</h1>
+          <p className="text-xs text-muted-foreground">Smart Scheduling</p>
+        </div>
       </div>
       
       <nav className="flex-1 p-4 space-y-2">
@@ -95,7 +102,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Button>
               </SheetTrigger>
             </Sheet>
-            <h1 className="text-lg font-semibold">HANU Planner</h1>
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">HANU Planner</h1>
+            </div>
             <div className="w-9" />
           </div>
         </div>

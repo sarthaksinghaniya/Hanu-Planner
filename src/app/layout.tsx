@@ -14,21 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hanu-Planner - AI-Powered Development",
-  description: "Modern Next.js scaffold optimized for AI-powered development with Hanu. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-  keywords: ["Hanu", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
-  authors: [{ name: "Hanu Team" }],
+  title: "HANU Planner - Smart Scheduling",
+  description: "Educational timetable planning system. Manage teachers, subjects, availability, and generate optimized schedules.",
+  keywords: ["HANU", "Planner", "Timetable", "Schedule", "Education", "Teachers", "Subjects"],
+  authors: [{ name: "HANU Team" }],
+  icons: {
+    icon: '/logo.svg',
+    shortcut: '/logo.svg',
+    apple: '/logo.svg',
+  },
   openGraph: {
-    title: "Hanu Code Scaffold",
-    description: "AI-powered development with modern React stack",
-    url: "https://chat.Hanu",
-    siteName: "Hanu",
+    title: "HANU Planner",
+    description: "Smart educational scheduling system",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hanu Code Scaffold",
-    description: "AI-powered development with modern React stack",
+    title: "HANU Planner",
+    description: "Smart educational scheduling system",
   },
 };
 
@@ -39,6 +42,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/logo.svg" />
+        <link rel="apple-touch-icon" href="/logo.svg" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
