@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     const availability = await db.availability.findUnique({
@@ -39,7 +45,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     const body = await request.json()
@@ -132,7 +138,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteParams
 ) {
   try {
     // Check if availability exists
