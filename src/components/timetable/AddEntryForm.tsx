@@ -30,6 +30,9 @@ export const AddEntryForm = ({ onAddEntry, className = '' }: AddEntryFormProps) 
     teacherName: '',
     room: ''
   });
+  
+  // Track the selected day as string for the Select component
+  const [selectedDay, setSelectedDay] = useState('1');
 
   const daysOfWeek = [
     { value: '1', label: 'Monday' },
@@ -43,7 +46,7 @@ export const AddEntryForm = ({ onAddEntry, className = '' }: AddEntryFormProps) 
     e.preventDefault();
     onAddEntry({
       ...formData,
-      dayOfWeek: Number(formData.dayOfWeek)
+      dayOfWeek: Number(selectedDay) // Use the selectedDay string converted to number
     });
     setOpen(false);
     // Reset form
@@ -55,6 +58,7 @@ export const AddEntryForm = ({ onAddEntry, className = '' }: AddEntryFormProps) 
       teacherName: '',
       room: ''
     });
+    setSelectedDay('1');
   };
 
   return (
@@ -74,8 +78,11 @@ export const AddEntryForm = ({ onAddEntry, className = '' }: AddEntryFormProps) 
             <div className="space-y-2">
               <Label htmlFor="day">Day</Label>
               <Select 
-                value={formData.dayOfWeek.toString()} 
-                onValueChange={(value) => setFormData({...formData, dayOfWeek: Number(value)})}
+                value={selectedDay}
+                onValueChange={(value) => {
+                  setSelectedDay(value);
+                  setFormData({...formData, dayOfWeek: Number(value)});
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select day" />
