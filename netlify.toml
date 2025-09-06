@@ -23,8 +23,6 @@
 # Required for Next.js static export
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    publish = "out"
 
 [functions]
   node_bundler = "esbuild"

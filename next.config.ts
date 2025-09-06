@@ -20,6 +20,19 @@ const nextConfig: NextConfig = {
     // 构建时忽略ESLint错误
     ignoreDuringBuilds: true,
   },
+  // Configure for static export
+  output: 'export',
+  distDir: 'out',
+  images: {
+    unoptimized: true, // Required for static exports
+  },
+  // Disable server-side rendering at build time
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
+  // Generate a 404.html file for SPA routing
+  generateBuildId: async () => 'build',
+  // Handle trailing slashes for static export
+  trailingSlash: true,
 };
 
 export default nextConfig;
