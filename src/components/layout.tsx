@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import Chatbot from '@/components/chatbot'
 import { 
   Calendar, 
@@ -86,6 +86,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile Sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="w-64 p-0">
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
           <NavContent />
         </SheetContent>
       </Sheet>

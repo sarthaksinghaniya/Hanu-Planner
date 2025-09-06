@@ -90,7 +90,7 @@ export default function AvailabilityPage() {
 
   const filteredAvailabilities = availabilities.filter(availability =>
     availability.teacherName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedTeacher === '' || availability.teacherId === selectedTeacher)
+    (selectedTeacher === '' || selectedTeacher === 'all' || availability.teacherId === selectedTeacher)
   )
 
   const handleAddAvailability = (formData: FormData) => {
@@ -284,7 +284,7 @@ export default function AvailabilityPage() {
                   <SelectValue placeholder="Filter by teacher" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Teachers</SelectItem>
+                  <SelectItem value="all">All Teachers</SelectItem>
                   {teachers.map(teacher => (
                     <SelectItem key={teacher.id} value={teacher.id}>
                       {teacher.name}

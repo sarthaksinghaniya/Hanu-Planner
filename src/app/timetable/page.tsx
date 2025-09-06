@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '@/components/layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Calendar, Plus, RefreshCw, Clock, User, BookOpen, MapPin } from 'lucide-react'
+import { Calendar, Clock, User, BookOpen, MapPin, RefreshCw } from 'lucide-react'
+import { v4 as uuidv4 } from 'uuid';
+import { TimetableQuickActions } from '@/components/timetable/TimetableQuickActions'
 
 interface TimetableEntry {
   id: string
@@ -42,6 +44,20 @@ interface Student {
   grade: string
 }
 
+interface TimetableQuickActionsProps {
+  onAddEntry?: (entry: {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    subjectName: string;
+    teacherName: string;
+    room: string;
+  }) => void;
+  onRegenerate?: () => void;
+  tableId: string;
+  className?: string;
+}
+
 const daysOfWeek = [
   'Monday',
   'Tuesday', 
@@ -55,7 +71,8 @@ const daysOfWeek = [
 const timeSlots = Array.from({ length: 12 }, (_, i) => i + 8) // 8 AM to 7 PM
 
 export default function TimetablePage() {
-  const [timetableEntries, setTimetableEntries] = useState<TimetableEntry[]>([
+  // Generate initial timetable entries
+  const generateInitialEntries = (): TimetableEntry[] => [
     {
       id: '1',
       subjectId: '1',
@@ -98,7 +115,7 @@ export default function TimetablePage() {
       endTime: 15,
       room: 'C301'
     }
-  ])
+  ]
 
   const [subjects] = useState<Subject[]>([
     { id: '1', name: 'Mathematics', code: 'MATH101', teacherId: '1', teacherName: 'Dr. Sarah Johnson' },
@@ -112,8 +129,14 @@ export default function TimetablePage() {
     { id: '3', name: 'Bob Johnson', email: 'bob.johnson@hanu.edu', grade: '11' }
   ])
 
-  const [selectedStudent, setSelectedStudent] = useState<string>('1')
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<string>('1');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [timetableEntries, setTimetableEntries] = useState<TimetableEntry[]>([]);
+
+  // Load initial entries
+  useEffect(() => {
+    setTimetableEntries(generateInitialEntries());
+  }, []);
 
   const filteredEntries = timetableEntries.filter(entry => 
     selectedStudent === '' || entry.studentId === selectedStudent
@@ -192,6 +215,50 @@ export default function TimetablePage() {
 
   const timetableGrid = getTimetableGrid()
 
+  const handleRegenerate = async () => {
+    setIsGenerating(true);
+    try {
+      // Simulate API call to regenerate timetable
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Reset to initial entries (in a real app, this would come from an API)
+      setTimetableEntries(generateInitialEntries());
+      
+      // Show success message
+      console.log('Timetable regenerated successfully');
+    } catch (error) {
+      console.error('Error regenerating timetable:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleAddEntry = (newEntry: {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    subjectName: string;
+    teacherName: string;
+    room: string;
+  }) => {
+    const entry: TimetableEntry = {
+      id: uuidv4(),
+      subjectId: `manual-${Date.now()}`,
+      subjectName: newEntry.subjectName,
+      subjectCode: 'MAN', // Manual entry code
+      teacherId: 'manual',
+      teacherName: newEntry.teacherName,
+      studentId: selectedStudent,
+      studentName: students.find(s => s.id === selectedStudent)?.name || 'Unknown',
+      dayOfWeek: newEntry.dayOfWeek,
+      startTime: parseInt(newEntry.startTime.split(':')[0]),
+      endTime: parseInt(newEntry.endTime.split(':')[0]),
+      room: newEntry.room
+    };
+    
+    setTimetableEntries(prev => [...prev, entry]);
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -241,7 +308,7 @@ export default function TimetablePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
+                <div id="timetable-view" className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead>
                       <tr>
@@ -394,19 +461,12 @@ export default function TimetablePage() {
                 Common timetable operations
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Manual Entry
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Regenerate Timetable
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Export to PDF
-              </Button>
+            <CardContent>
+              <TimetableQuickActions 
+                tableId="timetable-view"
+                onAddEntry={handleAddEntry}
+                onRegenerate={handleRegenerate}
+              />
             </CardContent>
           </Card>
 
