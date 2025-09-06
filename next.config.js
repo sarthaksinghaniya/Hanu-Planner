@@ -1,16 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  images: {
-    domains: ['localhost'], // Add your image domains here
+  compiler: {
+    // Remove console in production
+    removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Enable static exports for Netlify
-  output: 'export',
-  // Optional: Add a trailing slash to all paths
-  trailingSlash: true,
-  // Optional: Change the output directory
-  distDir: 'out',
-}
+  images: {
+    unoptimized: true, // Required for static exports
+    domains: ['localhost'],
+  },
+  // Disable static exports for API routes
+  output: 'standalone',
+  // Handle API routes
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
+  },
+  // Handle static files and routes
+  async exportPathMap() {
+    return {
+      '/': { page: '/' },
+      '/timetable': { page: '/timetable' },
+      // Add other static pages here
+    };
+  },
+};
 
 module.exports = nextConfig

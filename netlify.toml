@@ -1,12 +1,21 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  functions = ".next/functions"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_VERSION = "10.2.4"
   NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_USE_NODE_NAMESPACE = "true"
 
+# Required for Next.js API routes
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Handle client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -17,6 +26,9 @@
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client", "@prisma/adapter-pg"]
 
 [dev]
   framework = "next"
+  targetPort = 3000
+  port = 3000
