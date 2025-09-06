@@ -9,8 +9,9 @@ const nextConfig = {
     unoptimized: true, // Required for static exports
     domains: ['localhost'],
   },
-  // Disable static exports for API routes
-  output: 'standalone',
+  // Configure for Netlify
+  output: 'export',
+  distDir: 'out',
   // Handle API routes
   async rewrites() {
     return [
